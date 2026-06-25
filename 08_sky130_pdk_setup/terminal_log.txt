@@ -1,0 +1,8 @@
+harshini@harshini:~$ echo $PDK_ROOT
+/usr/local/share/pdk
+
+harshini@harshini:~$ ls $PDK_ROOT/sky130A/libs.tech/xschem/sky130_fd_pr/ | grep -i "nfet_01v8\|pfet_01v8"
+nfet_01v8.sym
+pfet_01v8.sym
+nfet_01v8.sch
+pfet_01v8.sch

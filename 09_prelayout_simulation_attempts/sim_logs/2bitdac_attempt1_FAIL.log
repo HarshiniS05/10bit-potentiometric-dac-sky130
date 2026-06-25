@@ -1,0 +1,14 @@
+harshini@harshini:~/avsddac_3v3_sky130_v1/Prelayout$ ngspice my_2bitdac.spice
+Note: No compatibility mode selected!
+
+Circuit: * 2bitdac
+
+Warning: open net: vdd
+Warning: open net: inp1
+Warning: open net: inp2
+Error: undriven node: dinb
+Error: undriven node: #net6
+Error: undriven node: #net8
+
+ngspice stopped due to error, no simulation run.
+% quit
