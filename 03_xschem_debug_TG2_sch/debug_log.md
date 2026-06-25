@@ -208,19 +208,19 @@ sed -i '174d' TG2.sch
 
 ### Schematics
 
-```text
-screenshots/tg2_schematic.png
-```
+
+![](screenshots/tg2_schematic.png)
+
 
 ### Debug Screenshots
 
-```text
-screenshots/02_all_yellow_missing_symbols.png
 
-screenshots/03_edit_properties_p3_inp2.png
+![](screenshots/02_all_yellow_missing_symbols.png)
 
-screenshots/04_select_overlapped_instances.png
-```
+![](screenshots/03_edit_properties_p3_inp2.png)
+
+![](screenshots/04_select_overlapped_instances.png)
+
 
 ---
 
