@@ -1,57 +1,220 @@
-<<<<<<< HEAD
-# AI-Assisted Circuit-Block Study — 10-bit Potentiometric DAC (SKY130)
+# AI-Assisted Study of a 10-Bit Potentiometric DAC in SKY130
 
-This repo documents Week 2 & 3 work continuing from the reference repository
-[vsdip/avsddac_3v3_sky130_v1](https://github.com/vsdip/avsddac_3v3_sky130_v1).
-The focus here is **circuit-level understanding and verification**, not final
-layout or GDS. Every block below was studied using AI-assisted prompts, then
-verified by hand against the actual repo files, schematic captures, or
-ngspice/xschem output.
+## Overview
 
-## How this repo is organized
+This repository documents an AI-assisted engineering study of a 10-bit resistor-string (potentiometric) DAC implemented using the SKY130 open-source PDK.
 
-Each numbered folder is one circuit-level study block. Inside each folder:
-- `prompt_log.md` — the exact AI prompts used, the tool/model name, and a note
-  on what was kept vs. corrected from the AI's response
-- `notes.md` — my own understanding in my own words, verified against the
-  repo or against a real simulation/schematic
-- supporting files (netlists, logs, screenshots) as relevant to that block
+The work is based on the reference implementation from:
 
-## Block index
+- VSD Open-Source Analog Mixed-Signal Design Program
+- SKY130 Open PDK Ecosystem
+- Xschem + Ngspice Simulation Flow
 
-| # | Folder | Status | What it covers |
-|---|--------|--------|-----------------|
-| 1 | `01_dac_basics_and_resistor_string` | Done | DAC fundamentals, LSB, resistor-string math |
-| 2 | `02_switch_transmission_gate` | Done | NMOS+PMOS transmission gate switch design |
-| 3 | `03_xschem_debug_TG2_sch` | In progress | Full debug timeline of TG2.sch — the richest block |
-| 4 | `04_2bit_dac_and_scaling_rule` | Blocked on #3 | 2-bit DAC, N-bit = 2×(N-1)-bit + 1 switch rule |
-| 5 | `05_vref_lsb_and_step_calc` | Done | VREFH/VREFL, LSB, output voltage formula |
-| 6 | `06_monotonicity_and_settling` | Done | Why resistor-string is structurally monotonic, RC settling |
-| 7 | `07_inl_dnl_concepts` | Done | DNL/INL formulas, missing-code interpretation |
-| 8 | `08_sky130_pdk_setup` | Done | PDK_ROOT, nfet/pfet_01v8 model locations |
-| 9 | `09_prelayout_simulation_attempts` | Thin — depends on #3 | ngspice runs, logs, any waveform captured |
+The objective of this repository is not to create a new DAC architecture, but to understand, verify, simulate, and document the complete hierarchy of a resistor-string DAC from the transmission-gate level up to the 10-bit top-level implementation.
 
-`ai_tools_used.md` and `observations.md` (repo root) are running logs updated
-across every block, not tied to one folder.
+---
 
-## Important honesty note on status
+# Learning Objectives
 
-Block 3 (`03_xschem_debug_TG2_sch`) is **not fully resolved yet**. The repo's
-`TG2.sch` (the transmission-gate subcircuit underlying the 2-bit DAC and all
-higher blocks) had several real problems — broken library paths, duplicate
-pin instances, and an unresolved `dinb` undriven-node error that was still
-being traced (down to calculating M7's gate pin offset from the symbol file)
-at the time of writing. Because of this, Block 4 and Block 9 are intentionally
-thin — they depend on Block 3 being clean before a real 2-bit DAC simulation
-can run. This dependency is stated here rather than papered over.
+This study focuses on:
 
-## How to run any netlist once Block 3 is resolved
+- DAC fundamentals
+- Resistor-string architecture
+- Transmission-gate switch operation
+- Hierarchical DAC scaling
+- LSB and output-voltage calculations
+- Monotonicity and settling behaviour
+- DNL and INL concepts
+- SKY130 PDK environment setup
+- Xschem schematic analysis
+- Ngspice pre-layout simulation
+
+---
+
+# Repository Structure
+
+```text
+10bit-potentiometric-dac-sky130/
+
+├── 01_dac_basics_and_resistor_string/
+├── 02_switch_transmission_gate/
+├── 03_xschem_debug_TG2_sch/
+├── 04_2bit_dac_and_scaling_rule/
+├── 05_vref_lsb_and_step_calc/
+├── 06_monotonicity_and_settling/
+├── 07_inl_dnl_concepts/
+├── 08_sky130_pdk_setup/
+├── 09_prelayout_simulation_attempts/
+│
+├── ai_tools_used.md
+├── observations.md
+└── README.md
+```
+
+---
+
+# Block Summary
+
+| Block | Topic | Status |
+|---------|---------|---------|
+| 01 | DAC Basics & Resistor String | Completed |
+| 02 | Transmission Gate Study | Completed |
+| 03 | TG2 Schematic Debug & Analysis | Completed |
+| 04 | 2-Bit DAC & Hierarchical Scaling | Completed |
+| 05 | VREF, LSB & Output Calculation | Completed |
+| 06 | Monotonicity & Settling Behaviour | Completed |
+| 07 | INL & DNL Concepts | Completed |
+| 08 | SKY130 PDK Setup & Verification | Completed |
+| 09 | Pre-Layout Simulation & Waveform Analysis | Completed |
+
+---
+
+# Software Environment
+
+## Design Entry
+
+- Xschem
+
+## Circuit Simulation
+
+- Ngspice
+
+## Process Design Kit
+
+- SKY130A Open PDK
+
+## Operating System
+
+- Ubuntu Linux (VMWare)
+
+---
+
+# Verified SKY130 Installation
+
+PDK root verified on the local machine:
 
 ```bash
-cd /home/harshini/avsddac_3v3_sky130_v1/Prelayout
-xschem TG2.sch          # open and inspect the switch subcircuit
-# Netlist button or Shift+I inside xschem to generate SPICE
-ngspice my_2bitdac.spice
+echo $PDK_ROOT
 ```
-=======
+
+Output:
+
+```text
+/usr/local/share/pdk
+```
+
+Device symbols verified:
+
+```bash
+ls $PDK_ROOT/sky130A/libs.tech/xschem/sky130_fd_pr/ \
+| grep -i "nfet_01v8\|pfet_01v8"
+```
+
+Output:
+
+```text
+nfet_01v8.sym
+pfet_01v8.sym
+nfet_01v8.sch
+pfet_01v8.sch
+```
+
+---
+
+# Simulation Evidence
+
+A 2-bit DAC pre-layout simulation was successfully executed using Ngspice.
+
+Simulation commands:
+
+```bash
+cd /home/harshini/avsddac_3v3_sky130_v1/Prelayout/
+
+ngspice my_2bitdac.spice
+
+hardcopy dac_staircase.ps x1_out_v x1_d1 x1_d0
+
+quit
+
+evince dac_staircase.ps &
+```
+
+The generated waveform confirms staircase DAC behaviour corresponding to the applied digital input codes.
+
+Evidence files:
+
+```text
+dac_staircase.ps
+Pictures/2bit_waveform.PNG
+```
+
+---
+
+# Key Technical Findings
+
+## Resistor-String DAC
+
+- Monotonic by construction
+- No decoder-induced missing codes
+- Simple architecture
+- Scales hierarchically
+
+## Transmission Gate
+
+- Uses parallel NMOS and PMOS devices
+- Provides low ON resistance
+- Passes both logic high and logic low efficiently
+
+## DAC Scaling Rule
+
+The hierarchy follows:
+
+```text
+N-bit DAC
+=
+Two (N−1)-bit DAC blocks
++
+One transmission-gate switch
+```
+
+Verified by inspection of:
+
+```text
+my_3bitdac.spice
+my_10bitdac.spice
+```
+
+---
+
+# AI-Assisted Workflow
+
+AI tools were used as learning assistants to:
+
+- Explain DAC concepts
+- Explain transmission-gate operation
+- Explain DNL/INL theory
+- Explain SKY130 PDK structure
+- Assist debugging workflows
+
+All explanations were manually verified against:
+
+- Repository schematics
+- Generated netlists
+- SKY130 PDK files
+- Ngspice simulation outputs
+
+AI responses were never accepted without verification.
+
+---
+
+# References
+
+1. SKY130 Open PDK
+2. Xschem Documentation
+3. Ngspice Documentation
+4. VSD Analog Mixed-Signal Design Program
+5. Original avsddac_3v3_sky130_v1 Repository
+
+---
+
 
