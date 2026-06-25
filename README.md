@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI-Assisted Circuit-Block Study — 10-bit Potentiometric DAC (SKY130)
 
 This repo documents Week 2 & 3 work continuing from the reference repository
@@ -52,3 +53,5 @@ xschem TG2.sch          # open and inspect the switch subcircuit
 # Netlist button or Shift+I inside xschem to generate SPICE
 ngspice my_2bitdac.spice
 ```
+=======
+
