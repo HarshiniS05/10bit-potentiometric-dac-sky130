@@ -194,8 +194,8 @@ evince dac_staircase.ps &
 
 ---
 
-![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/22bit_schematic.png)
-![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/2bit_waveform.png)
+![](screenshots/22bit_schematic.png)
+![](screenshots/2bit_waveform.png)
 
 ## Conclusion
 
