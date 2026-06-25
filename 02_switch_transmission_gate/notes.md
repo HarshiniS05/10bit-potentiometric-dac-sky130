@@ -35,7 +35,7 @@ sky130_fd_pr__nfet_01v8
 
 sky130_fd_pr__pfet_01v8
 
-![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/tg2_schematic.png)
+![](screenshots/tg2_schematic.png)
 
 ## My own takeaway
 
