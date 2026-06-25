@@ -93,10 +93,10 @@ This returned exact line numbers and coordinates:
 Confirmed `l2`/`l13` and `p1`/`p3` sit at *identical* coordinates with
 identical labels — true duplicates, not visual artifacts.
 
-**Screenshot:** ![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/03_edit_properties_p3_inp2.png) — the Edit
+**Screenshot:** ![](screenshots/03_edit_properties_p3_inp2.png) — the Edit
 Properties dialog confirming `p3` = `ipin.sym`, `name=p3 lab=inp2`
 
-**Screenshot:** ![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/04_select_overlapped_instances.png )— xschem's
+**Screenshot:** ![](screenshots/04_select_overlapped_instances.png )— xschem's
 built-in Highlight → Select overlapped instances feature confirming 3
 objects selected as genuinely overlapping
 
