@@ -40,7 +40,7 @@ The schematic used for this study is:
 Supporting image:
 
 ```text
-Pictures/2bit_schematic.PNG
+Pictures/2bit_schematic.png
 ```
 
 ---
@@ -129,7 +129,7 @@ Supporting evidence:
 
 ```text
 dac_staircase.ps
-Screenshots/2bit_waveform.PNG
+Screenshots/2bit_waveform.png
 
 ```
 
@@ -180,8 +180,8 @@ my_10bitdac.spice
 
 ```text
 dac_staircase.ps
-screnshots/2bit_schematic.PNG
-screnshots/2bit_waveform.PNG
+screenshots/2bit_schematic.png
+screnshots/2bit_waveform.png
 ```
 
 ### Commands Executed
@@ -193,9 +193,11 @@ evince dac_staircase.ps &
 ```
 
 ---
+### Schematic
+![](../screenshots/2bit_schematic.png)
 
-![](screenshots/22bit_schematic.png)
-![](screenshots/2bit_waveform.png)
+### Waveform
+![](../screenshots/2bit_waveform.png)
 
 ## Conclusion
 
