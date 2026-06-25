@@ -21,8 +21,26 @@ in parallel, with complementary gate control via an inverter:
 This is confirmed directly in the repo's `Prelayout/switch.spice` and the
 `TG2.sch` schematic (studied in detail in Block 3).
 
+## Verification Method
+
+Studied:
+
+Prelayout/switch.spice
+
+TG2.sch
+
+## Device Models Used
+
+sky130_fd_pr__nfet_01v8
+
+sky130_fd_pr__pfet_01v8
+
+![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/tg2_schematic.png)
+
 ## My own takeaway
 
 The elegance here is that neither transistor needs to individually handle
 the full range — they cover each other's weak region. This is a pattern
 worth remembering beyond just this DAC project.
+
+

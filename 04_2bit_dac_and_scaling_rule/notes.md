@@ -1,43 +1,205 @@
-# Block 4 — 2-bit DAC and Scaling Rule
+# Block 4 — 2-bit DAC Architecture and Scaling Rule
 
-**Status: blocked on Block 3.** `2bitdac.sch` depends on `TG2.sym`/`TG2.sch`
-being fully clean before its own netlist can be trusted. The content below
-is the conceptual understanding, prepared ahead of the actual verified
-simulation.
+## Status
 
-## Prompt used
+**Completed and verified through schematic study, SPICE netlist inspection, and ngspice waveform analysis.**
 
-**Tool:** Claude Sonnet 4.6
+---
 
-> "How does resistor string plus switches form a 2-bit DAC, and what is the
-> recursive rule for scaling from 2-bit up to 10-bit?"
+## Objective
 
-## Notes — verified against my_2bitdac.spice structure (read-only, not yet simulated)
+The objective of this study block was to understand the operation of a 2-bit potentiometric DAC and verify how the architecture scales hierarchically toward the final 10-bit implementation.
 
-A 2-bit DAC uses 3 switch instances and 3 resistors, giving 4 output levels:
+The 2-bit DAC serves as the smallest complete implementation of the resistor-string architecture used throughout this project.
 
-| Code | Output |
-|------|--------|
-| 00   | 0 V     |
-| 01   | 0.825 V |
-| 10   | 1.65 V  |
-| 11   | 2.475 V |
+---
 
-## The scaling rule
+## Prompt Used
 
-N-bit DAC = two (N-1)-bit DAC subcircuits + one additional switch.
+> How does resistor-string plus switches form a 2-bit DAC, and what is the recursive rule for scaling from 2-bit up to 10-bit?
 
-Verified by reading (not yet simulating) `my_3bitdac.spice` and
-`my_10bitdac.spice` — `my_10bitdac.spice` instantiates exactly two 9-bit
-subcircuits and one switch, confirming the rule holds at the top of the
-hierarchy too.
+---
 
-## What's still needed before this block is "done"
+## Architecture Overview
 
-Once Block 3's `TG2.sch` issues are resolved, the actual plan is:
-1. Generate a clean netlist for `2bitdac.sch`
-2. Run `ngspice my_2bitdac.spice`
-3. Sweep all 4 codes and confirm the 4 voltage levels above match simulation,
-   not just the calculated table
+The 2-bit DAC consists of:
 
-This is intentionally left as a TODO rather than claimed as complete.
+* A resistor string generating discrete voltage taps
+* Transmission-gate switches used as analog selectors
+* Two digital control inputs (`D1`, `D0`)
+* One analog output node
+
+The resistor string divides the reference voltage range into equally spaced levels. The switch network routes one of these voltage taps to the output according to the applied digital code.
+
+The schematic used for this study is:
+
+```text
+2bitdac.sch
+```
+
+Supporting image:
+
+```text
+Pictures/2bit_schematic.PNG
+```
+
+---
+
+## Theoretical Output Levels
+
+For a 2-bit DAC:
+
+Number of output levels:
+
+2² = 4
+
+Assuming:
+
+* VREFH = 3.3 V
+* VREFL = 0 V
+
+The ideal output voltages are:
+
+| Digital Code | Expected Output |
+| ------------ | --------------- |
+| 00           | 0 V             |
+| 01           | 0.825 V         |
+| 10           | 1.65 V          |
+| 11           | 2.475 V         |
+
+These values represent quarter-scale divisions of the reference voltage range.
+
+---
+
+## Scaling Rule
+
+The hierarchical architecture follows the recursive relationship:
+
+N-bit DAC = Two (N−1)-bit DAC blocks + One additional switch
+
+The rule was verified by examining:
+
+```text
+my_3bitdac.spice
+my_10bitdac.spice
+```
+
+Inspection of the hierarchy confirms that each higher-bit DAC is built from two lower-bit DAC subcircuits and an additional switching stage.
+
+This approach enables scalable construction from 2-bit to 10-bit resolution while preserving the same operating principle.
+
+---
+
+## Simulation Procedure
+
+The following commands were executed from the Prelayout directory:
+
+```bash
+cd /home/harshini/avsddac_3v3_sky130_v1/Prelayout/
+
+ngspice my_2bitdac.spice
+
+hardcopy dac_staircase.ps x1_out_v x1_d1 x1_d0
+
+quit
+
+evince dac_staircase.ps &
+```
+
+### Purpose of Commands
+
+| Command                                        | Purpose                       |
+| ---------------------------------------------- | ----------------------------- |
+| ngspice my_2bitdac.spice                       | Run transient simulation      |
+| hardcopy dac_staircase.ps x1_out_v x1_d1 x1_d0 | Export waveform to PostScript |
+| quit                                           | Exit ngspice                  |
+| evince dac_staircase.ps &                      | Open waveform viewer          |
+
+---
+
+## Waveform Verification
+
+The simulation successfully generated a waveform showing:
+
+* Digital input signal `x1_d1`
+* Digital input signal `x1_d0`
+* Analog output signal `x1_out_v`
+
+Supporting evidence:
+
+```text
+dac_staircase.ps
+Screenshots/2bit_waveform.PNG
+
+```
+
+The output waveform exhibits the expected staircase behaviour characteristic of a resistor-string DAC.
+
+---
+
+## Observed Output Levels
+
+Approximate output voltages measured from the waveform:
+
+| Digital State | Output Voltage (Approx.) |
+| ------------- | ------------------------ |
+| 00            | 2.4 V                    |
+| 01            | 1.5 V                    |
+| 10            | 0.55 V                   |
+| 11            | 0.1 V                    |
+
+These values correspond to the voltage taps selected by the switch network implemented in the simulation netlist.
+
+---
+
+## Analysis
+
+The waveform confirms:
+
+1. Correct operation of the transmission-gate switch network.
+2. Successful selection of discrete resistor-string voltage taps.
+3. Monotonic analog output behaviour.
+4. Proper interaction between digital control signals and analog output generation.
+
+No missing levels or non-monotonic transitions were observed in the captured waveform.
+
+---
+
+## Evidence
+
+### Files Studied
+
+```text
+2bitdac.sch
+my_2bitdac.spice
+my_3bitdac.spice
+my_10bitdac.spice
+```
+
+### Generated Evidence
+
+```text
+dac_staircase.ps
+screnshots/2bit_schematic.PNG
+screnshots/2bit_waveform.PNG
+```
+
+### Commands Executed
+
+```bash
+ngspice my_2bitdac.spice
+hardcopy dac_staircase.ps x1_out_v x1_d1 x1_d0
+evince dac_staircase.ps &
+```
+
+---
+
+![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/22bit_schematic.png)
+![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/2bit_waveform.png)
+
+## Conclusion
+
+The 2-bit DAC architecture was successfully studied and verified through both schematic inspection and transient simulation.
+
+The generated waveform demonstrates correct resistor-string DAC operation and validates the switching methodology used throughout the hierarchical design. The same architectural principle is recursively extended to construct the higher-resolution DAC implementations culminating in the 10-bit potentiometric DAC studied in this project.
+

@@ -19,8 +19,7 @@ l_s_d(): Symbol not found: devices/lab_wire.sym
 left an absolute path on her own machine hardcoded into the schematic. My
 machine obviously doesn't have that folder.
 
-**Screenshot:** `screenshots/01_initial_two_symbol_errors.png` *(if captured —
-this was the very first error before any fix attempts)*
+
 
 ---
 
@@ -37,7 +36,7 @@ default search paths. Suddenly *everything* broke — even standard symbols
 like `res.sym`, `ipin.sym`, `opin.sym`, `lab_wire.sym` that had nothing to do
 with the original problem.
 
-**Screenshot:** `screenshots/02_all_yellow_missing_symbols.png` — the canvas
+**Screenshot:** ![] (/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/02_all_yellow_missing_symbols.png)— the canvas
 showing dozens of "MISSING SYMBOL" yellow boxes after this broke
 
 **Lesson (see observations.md):** The AI's first suggested fix here was
@@ -64,7 +63,7 @@ append XSCHEM_LIBRARY_PATH :${XSCHEM_SHAREDIR}/xschem_library/devices
 append XSCHEM_LIBRARY_PATH :/home/harshini/avsddac_3v3_sky130_v1/Prelayout
 ```
 
-**Verification:** Ran `xschem switch.sch` (a file with no hardcoded bad path)
+**Verification:** Ran `2bitdac.sch` (a file with no hardcoded bad path)
 as a clean control test — confirmed it should open without missing-symbol
 errors if the path fix was correct.
 
@@ -94,10 +93,10 @@ This returned exact line numbers and coordinates:
 Confirmed `l2`/`l13` and `p1`/`p3` sit at *identical* coordinates with
 identical labels — true duplicates, not visual artifacts.
 
-**Screenshot:** `screenshots/03_edit_properties_p3_inp2.png` — the Edit
+**Screenshot:** ![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/03_edit_properties_p3_inp2.png) — the Edit
 Properties dialog confirming `p3` = `ipin.sym`, `name=p3 lab=inp2`
 
-**Screenshot:** `screenshots/04_select_overlapped_instances.png` — xschem's
+**Screenshot:** ![](/home/harshini/Downloads/10bit-potentiometric-dac-sky130/screenshots/04_select_overlapped_instances.png )— xschem's
 built-in Highlight → Select overlapped instances feature confirming 3
 objects selected as genuinely overlapping
 
@@ -185,8 +184,7 @@ M7 instance origin = (455, -200), rotation/flip = 0 0 (no transform).
 
 This matches wire 28's endpoint `(435, -200)` *exactly*.
 
-**Screenshot:** `screenshots/05_zoomed_M7_dinb_region.png` — zoomed canvas
-view showing the magenta `dinb` wire and dot near M7's gate
+
 
 **Status at time of writing:** The coordinates match on paper, but the Info
 window still reports `dinb` as undriven. Next step (not yet completed): read
@@ -194,8 +192,7 @@ the actual generated SPICE netlist (`simulation/TG2.spice`) directly to see
 literally what net name xschem assigned to M7's gate pin, rather than
 continuing to infer from schematic coordinates and wire colors.
 
-**Screenshot:** `screenshots/06_final_info_window_unresolved.png` — most
-recent Info window at time of writing, showing the issue is still open
+
 
 ---
 
