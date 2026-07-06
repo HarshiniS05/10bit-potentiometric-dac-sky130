@@ -153,7 +153,7 @@ by simulation to exactly match simple voltage-divider theory.
 
 **Final verified result:**
 
-![2bitdac waveform](./images/2bitdac_waveform.png)
+![2bitdac waveform](./2bitdac/images/2bitdac_waveform.png)
 *`v_out` steps cleanly through 0V → 0.45V → 0.9V → 1.35V as the code
 `(d1,d0)` advances through 00 → 01 → 10 → 11 — monotonic, evenly spaced.*
 
