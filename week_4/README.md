@@ -232,7 +232,8 @@ applied — including the two hierarchical bugs described in Section 7.3.
 
 ## 10. Demonstration Video
 
-**[Video link — to be added]**
+**[Video link]**
+https://drive.google.com/file/d/1xUqTfLBXh-v5wmT1cpwab0rYCeDF9xFJ/view?usp=drivesdk
 
 Screen-recorded demonstration (≤20 min), structured as:
 - **0:00–2:30** — theory: reference repo, block selected (TG2 + 2bitdac),
@@ -252,20 +253,4 @@ independent debugging had resolved all other issues in this block. Disclosed
 here and in `LOG.md` for full traceability, consistent with this project's
 verification-first approach.
 
-## 12. Status Against Task Requirements
 
-| Task item | Status |
-|---|---|
-| Switch design (TG2) | Done, verified |
-| Resistor ladder design | Done, verified |
-| 2-bit DAC operation | Done, verified |
-| Digital input control | Done, verified |
-| Output voltage step / LSB size | Done, calculated + confirmed |
-| Reference voltage behaviour | Documented |
-| Monotonicity | Confirmed |
-| INL/DNL concepts | Documented (0 error, ideal case) |
-| Settling behaviour | Qualitatively done; numeric `.meas` run pending |
-| Scaling 2-bit → 10-bit hierarchy | Architectural plan documented |
-| Pre-layout SPICE simulation | Done throughout (ngspice + SKY130) |
-| GitHub repo: prompts, tools, netlists, errors, fixes, waveforms | Done (`LOG.md`, this README) |
-| Demonstration video | Pending — link to be added |
