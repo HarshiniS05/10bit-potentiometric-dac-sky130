@@ -51,11 +51,19 @@ XM8 vout din  inp2 vdd  sky130_fd_pr__pfet_01v8 L=0.15 W=1 nf=1 ad=0.3 as=0.3 pd
 - `din=1` → `vout` ≈ 1.8V (tracks inp1)
 - `din=0` → `vout` ≈ 0V (tracks inp2)
 
+
 ![TG2 control signal check](./TG2/images/TG2_din_dinb_controlpng.png)
 *`din`/`dinb` confirmed clean and non-overlapping — precondition for
 glitch-free switching.*
 
 ![TG2 waveform](./TG2/images/TG2_full_waveform_clean.png)
+
+![TG2 control](TG2/images/TG2_din_dinb_control.png)
+*`din`/`dinb` confirmed clean and non-overlapping — precondition for
+glitch-free switching.*
+
+![TG2 waveform](TG2/images/TG2_full_waveform_clean.png)
+5ae0411 (Fix image filenames and update LOG)
 *`vout` cleanly tracks `inp1`/`inp2` as `din` toggles, rail-to-rail, no
 contention.*
 
