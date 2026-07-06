@@ -121,11 +121,11 @@ XM8 vout din  inp2 vdd  sky130_fd_pr__pfet_01v8 L=0.15 W=1 nf=1 ...
 **Verification:** standalone testbench (`TG2_tb.spice`) applied `inp1=1.8V`,
 `inp2=0V`, toggled `din`/`dinb` as a complementary pair.
 
-![TG2 control signal check](./images/TG2_din_dinb_control.png)
+![TG2 control](TG2/images/TG2_din_dinb_control.png)
 *`din`/`dinb` confirmed as clean, non-overlapping complementary square
 waves — precondition for glitch-free switching.*
 
-![TG2 waveform](./images/TG2_waveform.png)
+![TG2 waveform](TG2/images/TG2_full_waveform_clean.png)
 *`vout` cleanly tracks `inp1` (1.8V) when `din` is high, and `inp2` (0V) when
 `din` is low — rail-to-rail, no contention. Confirms the fix.*
 
@@ -235,14 +235,7 @@ applied — including the two hierarchical bugs described in Section 7.3.
 **[Video link]**
 https://drive.google.com/file/d/1xUqTfLBXh-v5wmT1cpwab0rYCeDF9xFJ/view?usp=drivesdk
 
-Screen-recorded demonstration (≤20 min), structured as:
-- **0:00–2:30** — theory: reference repo, block selected (TG2 + 2bitdac),
-  design goal, expected 4-level result
-- **2:30–end** — live reproduction: folder structure, AI prompts shown,
-  TG2 standalone run (command + waveform), 2bitdac hierarchy build, live
-  netlist generation showing an actual bug (empty instances) and its fix,
-  final transient run, final waveform, AI tool (Claude) named on camera,
-  summary of what worked/failed
+
 
 ## 11. Attribution Note
 
