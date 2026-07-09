@@ -203,7 +203,7 @@ First hierarchical composition: two `2bitdac_v2` blocks plus one outer `TG2`, se
 
 | | |
 |---|---|
-| **Schematic** | ![3-bit DAC schematic](prelayout/images/3bitdac-schematic.png) |
+| **Schematic** | ![3-bit DAC schematic](prelayout/images/3bitdac_schematic.png) |
 | **Waveform** | ![3-bit DAC waveform](prelayout/images/3bitdac_waveform.png) |
 
 **Bug found and fixed:** the testbench initially drove a reference source at a node named `VREF1`, while the actual flattened netlist's top-level reference pin was `vref_top` — two unrelated nodes. The resistor string had no DC reference at all and was floating, producing only millivolt-scale capacitive-coupling spikes at switching instants instead of a real staircase. Fixed by matching the testbench source to the netlist's real node name. The waveform above is the corrected, verified run.
@@ -214,8 +214,8 @@ Two `3bitdac_v2` blocks plus one outer `TG2`, selected by `d3`.
 
 | | |
 |---|---|
-| **Schematic** | ![4-bit DAC schematic](prelayout/images/4bitdac_schematic.png) |
-| **Waveform** | ![4-bit DAC waveform](prelayout/images/4bitdac_waveform.png) |
+| **Schematic** | ![4-bit DAC schematic](/images/4bitdac_schematic.png) |
+| **Waveform** | ![4-bit DAC waveform](/images/4bitdac_waveform.png) |
 
 Clean 16-level staircase, verified on first pass — no pin-order or reference issues found in this stage.
 
@@ -225,8 +225,8 @@ Two `4bitdac_v2` blocks plus one outer `TG2`, selected by `d4`.
 
 | | |
 |---|---|
-| **Schematic** | ![5-bit DAC schematic](prelayout/images/5bitdac_schematic.png) |
-| **Waveform** | ![5-bit DAC waveform](prelayout/images/5bitdac_waveform.png) |
+| **Schematic** | ![5-bit DAC schematic](/images/5bitdac_schematic.png) |
+| **Waveform** | ![5-bit DAC waveform](/images/5bitdac_waveform.png) |
 
 **Bug found and fixed:** the outer `TG2`'s `dinb`/`din` pins were connected as `d4 d4b` instead of `d4b d4`, reversing the mux's select logic. The staircase rose correctly through the first 16 codes, then dropped sharply back to 0V at the MSB transition instead of continuing to climb, before restarting a second, unconnected 16-level rise from 0V — visually, two back-to-back 4-bit staircases instead of one continuous 5-bit one. Fixed by swapping the wire connections at the `TG2` instance so `d4b` lands on `dinb` and `d4` lands on `din`. The waveform above is the corrected, verified run.
 
@@ -236,8 +236,8 @@ Two `5bitdac_v2` blocks plus one outer `TG2`, selected by `d5`.
 
 | | |
 |---|---|
-| **Schematic** | ![6-bit DAC schematic](prelayout/images/6bitdac_schematic.png) |
-| **Waveform** | ![6-bit DAC waveform](prelayout/images/6bitdac_waveform.png) |
+| **Schematic** | ![6-bit DAC schematic](/images/6bitdac_schematic.png) |
+| **Waveform** | ![6-bit DAC waveform](/images/6bitdac_waveform.png) |
 
 **Bug found and fixed (two-stage):** the same `dinb`/`din` swap bug reappeared inside the reused `5bitdac_v2` block itself. The first fix attempt corrected the swap by reordering `5bitdac_v2`'s own external pin list — but the parent `6bitdac.sch`, which still called that block using the *old* pin order, silently reintroduced the same select-inversion at the connection boundary instead of fixing it. The real fix required updating both: the internal `TG2` wiring inside `5bitdac_v2`, *and* the `x1`/`x2` instance argument order in `6bitdac.sch` that calls it. Lesson carried forward into later stages: when a reusable block's external pin order changes, every parent instance calling it must be re-verified against the new order, not just the block itself.
 
@@ -247,8 +247,8 @@ Two `6bitdac_v2` blocks plus one outer `TG2`, selected by `d6`.
 
 | | |
 |---|---|
-| **Schematic** | ![7-bit DAC schematic](prelayout/images/7bitdac_schematic.png) |
-| **Waveform** | ![7-bit DAC waveform](prelayout/images/7bitdac-waveform.png) |
+| **Schematic** | ![7-bit DAC schematic](/images/7bitdac_schematic.png) |
+| **Waveform** | ![7-bit DAC waveform](/images/7bitdac-waveform.png) |
 
 Full pin-order audit across all six nested hierarchy levels came back clean — no swap bug this time. One non-functional issue surfaced during simulation: ngspice's default behavior of archiving every internal node (every `tab_a/b/c`, `node_a/b`, `mid_node` at every recursion depth) came within ~100MB of the ~2.5GB internal data cap on the 128-code, 100ps-timestep run. Not a circuit bug, but noted for the memory fix applied starting with the 8-bit stage.
 
@@ -258,8 +258,8 @@ Two `7bitdac_v2` blocks plus one outer `TG2`, selected by `d7`.
 
 | | |
 |---|---|
-| **Schematic** | ![8-bit DAC schematic](prelayout/images/8bitdac_schematic.png) |
-| **Waveform** | ![8-bit DAC waveform](prelayout/images/8bitdac_waveform.png) |
+| **Schematic** | ![8-bit DAC schematic](/images/8bitdac_schematic.png) |
+| **Waveform** | ![8-bit DAC waveform](/images/8bitdac_waveform.png) |
 
 Pin-order audit clean across all seven nested hierarchy levels. A `.save` directive was added to the testbench ahead of time (before running, based on the 7-bit memory warning) to store only the signals needed for verification (`v_out`, digital control lines, `mid_node`, `vref_top`) rather than every internal ladder node — cutting stored simulation data by roughly two orders of magnitude and keeping the 256-code run well within ngspice's memory limit.
 
@@ -269,7 +269,7 @@ Two `8bitdac_v2` blocks plus one outer `TG2`, selected by `d8`.
 
 | | |
 |---|---|
-| **Schematic** | ![9-bit DAC schematic](prelayout/images/9bitdac_schematic.png) |
+| **Schematic** | ![9-bit DAC schematic](/images/9bitdac_schematic.png) |
 | **Waveform** | *pending — simulation and waveform verification not yet completed* |
 
 Schematic capture is complete; `9bitdac_v2.sch`/`.sym` (needed to reuse this stage as a building block for the 10-bit DAC) have not yet been created. Simulation and waveform verification are the next step before proceeding to the 10-bit design.
