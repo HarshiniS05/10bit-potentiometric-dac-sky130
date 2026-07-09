@@ -1,0 +1,236 @@
+** sch_path: /home/harshini/DAC_Project/9bitdac.sch
+**.subckt 9bitdac vref_top d0 d0b vdd d1 d1b gnda d4b d6b d2b d5b d6 d7b d4 d7 d5 d3b d2 d3 d8b d8
+*+ v_out
+*.ipin vref_top
+*.ipin d0
+*.ipin d0b
+*.ipin vdd
+*.ipin d1
+*.ipin d1b
+*.ipin gnda
+*.ipin d4b
+*.ipin d6b
+*.ipin d2b
+*.ipin d5b
+*.ipin d6
+*.ipin d7b
+*.ipin d4
+*.ipin d7
+*.ipin d5
+*.ipin d3b
+*.ipin d2
+*.ipin d3
+*.ipin d8b
+*.ipin d8
+*.opin v_out
+x1 vref_top d0 d0b vdd d1 d1b gnda d4b d6b d2b d5b upper_out d6 d7b d4 d7 d5 d3b d2 d3 mid_node
++ 8bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b gnda d4b d6b d2b d5b lower_out d6 d7b d4 d7 d5 d3b d2 d3 gnda
++ 8bitdac_v2
+Xx3 gnda v_out lower_out upper_out d8b d8 vdd TG2
+**.ends
+
+* expanding   symbol:  xschem/8bitdac_v2.sym # of pins=21
+** sym_path: /home/harshini/DAC_Project/xschem/8bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/8bitdac_v2.sch
+.subckt 8bitdac_v2 vref_top d0 d0b vdd d1 d1b gnda d4b d6b d2b d5b v_out d6 d7b d4 d7 d5 d3b d2 d3
++ vref_bottom
+*.ipin vref_top
+*.ipin d0
+*.ipin d0b
+*.ipin vdd
+*.ipin d1
+*.ipin d1b
+*.ipin gnda
+*.ipin d4b
+*.ipin d6b
+*.ipin d2b
+*.ipin d5b
+*.ipin d6
+*.ipin d4
+*.ipin d5
+*.ipin d3b
+*.ipin d3
+*.ipin d2
+*.ipin d7b
+*.ipin d7
+*.opin v_out
+*.ipin vref_bottom
+x1 vref_top d0 d0b vdd d1 d1b gnda upper_out d4b d6b d2b d5b d6 d4 d5 d3b d2 d3 mid_node 7bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b gnda lower_out d4b d6b d2b d5b d6 d4 d5 d3b d2 d3 vref_bottom
++ 7bitdac_v2
+Xx3 gnda v_out lower_out upper_out d7b d7 vdd TG2
+.ends
+
+
+* expanding   symbol:  xschem/TG2.sym # of pins=7
+** sym_path: /home/harshini/DAC_Project/xschem/TG2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/TG2.sch
+.subckt TG2 gnda vout inp2 inp1 dinb din vdd
+*.ipin din
+*.ipin inp1
+*.ipin inp2
+*.ipin vdd
+*.opin vout
+*.iopin gnda
+*.ipin dinb
+XM1 vout din inp1 gnda sky130_fd_pr__nfet_01v8 L=0.15 W=1 nf=1 ad=0.3 as=0.3 pd=1.68 ps=1.68 nrd=0.3
++ nrs=0.3 sa=0 sb=0 sd=0 mult=1 m=1
+XM2 vout dinb inp1 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=1 nf=1 ad=0.3 as=0.3 pd=1.68 ps=1.68 nrd=0.3
++ nrs=0.3 sa=0 sb=0 sd=0 mult=1 m=1
+XM7 vout dinb inp2 gnda sky130_fd_pr__nfet_01v8 L=0.15 W=1 nf=1 ad=0.3 as=0.3 pd=1.68 ps=1.68
++ nrd=0.3 nrs=0.3 sa=0 sb=0 sd=0 mult=1 m=1
+XM8 vout din inp2 vdd sky130_fd_pr__pfet_01v8 L=0.15 W=1 nf=1 ad=0.3 as=0.3 pd=1.68 ps=1.68 nrd=0.3
++ nrs=0.3 sa=0 sb=0 sd=0 mult=1 m=1
+.ends
+
+
+* expanding   symbol:  xschem/7bitdac_v2.sym # of pins=19
+** sym_path: /home/harshini/DAC_Project/xschem/7bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/7bitdac_v2.sch
+.subckt 7bitdac_v2 vref_top d0 d0b vdd d1 d1b gnda v_out d4b d6b d2b d5b d6 d4 d5 d3b d2 d3
++ vref_bottom
+*.ipin vref_top
+*.ipin d0
+*.ipin d0b
+*.ipin vdd
+*.ipin d1
+*.ipin gnda
+*.ipin d4b
+*.ipin d2b
+*.ipin d5b
+*.ipin d4
+*.ipin d5
+*.ipin d3b
+*.ipin d2
+*.ipin d3
+*.ipin d6b
+*.ipin d6
+*.opin v_out
+*.ipin d1b
+*.ipin vref_bottom
+x1 vref_top d0 d0b vdd d1 d1b gnda d4b upper_out d2b d5b d4 d5 d3b d2 d3 mid_node 6bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b gnda d4b lower_out d2b d5b d4 d5 d3b d2 d3 vref_bottom 6bitdac_v2
+Xx3 gnda v_out lower_out upper_out d6b d6 vdd TG2
+.ends
+
+
+* expanding   symbol:  xschem/6bitdac_v2.sym # of pins=17
+** sym_path: /home/harshini/DAC_Project/xschem/6bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/6bitdac_v2.sch
+.subckt 6bitdac_v2 vref_top d0 d0b vdd d1 d1b gnda d4b v_out d2b d5b d4 d5 d3b d2 d3 vref_bottom
+*.ipin vref_top
+*.ipin d0
+*.ipin d0b
+*.ipin vdd
+*.ipin d1
+*.ipin d1b
+*.ipin d4b
+*.ipin d2b
+*.ipin d4
+*.ipin d3b
+*.ipin gnda
+*.ipin d2
+*.ipin d3
+*.ipin d5b
+*.ipin d5
+*.opin v_out
+*.ipin vref_bottom
+Xx3 gnda v_out lower_out upper_out d5b d5 vdd TG2
+x1 vref_top d0 d0b vdd d1 d1b upper_out gnda d4b d2b d4 d3b d2 d3 mid_node 5bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b lower_out gnda d4b d2b d4 d3b d2 d3 vref_bottom 5bitdac_v2
+.ends
+
+
+* expanding   symbol:  xschem/5bitdac_v2.sym # of pins=15
+** sym_path: /home/harshini/DAC_Project/xschem/5bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/5bitdac_v2.sch
+.subckt 5bitdac_v2 vref_top d0 d0b vdd d1 d1b v_out gnda d4b d2b d4 d3b d2 d3 vref_bottom
+*.ipin vref_top
+*.ipin d0
+*.ipin vdd
+*.ipin d1b
+*.ipin d0b
+*.ipin d1
+*.ipin gnda
+*.ipin d2b
+*.ipin d3b
+*.ipin d2
+*.ipin d3
+*.ipin d4b
+*.ipin d4
+*.opin v_out
+*.ipin vref_bottom
+Xx3 gnda v_out lower_out upper_out d4b d4 vdd TG2
+x1 vref_top d0 d0b vdd d1 d1b gnda upper_out d2b d3b d2 d3 mid_node 4bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b gnda lower_out d2b d3b d2 d3 vref_bottom 4bitdac_v2
+.ends
+
+
+* expanding   symbol:  xschem/4bitdac_v2.sym # of pins=13
+** sym_path: /home/harshini/DAC_Project/xschem/4bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/4bitdac_v2.sch
+.subckt 4bitdac_v2 vref_top d0 d0b vdd d1 d1b gnda v_out d2b d3b d2 d3 vref_bottom
+*.ipin vref_top
+*.ipin gnda
+*.ipin vdd
+*.ipin d3
+*.ipin d3b
+*.ipin d2
+*.ipin d2b
+*.ipin d1
+*.ipin d1b
+*.ipin d0
+*.ipin d0b
+*.opin v_out
+*.ipin vref_bottom
+Xx3 gnda v_out lower_out upper_out d3b d3 vdd TG2
+x1 vref_top d0 d0b vdd d1 d1b upper_out gnda d2b d2 mid_node 3bitdac_v2
+x2 mid_node d0 d0b vdd d1 d1b lower_out gnda d2b d2 vref_bottom 3bitdac_v2
+.ends
+
+
+* expanding   symbol:  xschem/3bitdac_v2.sym # of pins=11
+** sym_path: /home/harshini/DAC_Project/xschem/3bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/3bitdac_v2.sch
+.subckt 3bitdac_v2 vref_top d0 d0b vdd d1 d1b v_out gnda d2b d2 vref_bottom
+*.ipin vref_top
+*.ipin gnda
+*.ipin vdd
+*.ipin d2b
+*.ipin d1b
+*.ipin d0
+*.ipin d0b
+*.ipin d2
+*.ipin d1
+*.opin v_out
+*.ipin vref_bottom
+x1 mid_node d0 lower_out d0b vdd d1 d1b vref_bottom gnda 2bitdac_v2
+x2 vref_top d0 upper_out d0b vdd d1 d1b mid_node gnda 2bitdac_v2
+Xx3 gnda v_out lower_out upper_out d2b d2 vdd TG2
+.ends
+
+
+* expanding   symbol:  xschem/2bitdac_v2.sym # of pins=9
+** sym_path: /home/harshini/DAC_Project/xschem/2bitdac_v2.sym
+** sch_path: /home/harshini/DAC_Project/xschem/2bitdac_v2.sch
+.subckt 2bitdac_v2 vref_top d0 v_out d0b vdd d1 d1b vref_bottom gnda
+*.ipin vref_top
+*.ipin gnda
+*.ipin d0
+*.ipin d0b
+*.ipin vdd
+*.ipin d1
+*.opin v_out
+*.ipin d1b
+*.ipin vref_bottom
+R1 vref_top tab_a 500 m=1
+R2 tab_a tab_b 500 m=1
+R3 tab_b tab_c 500 m=1
+R4 tab_c vref_bottom 500 m=1
+XXx1 gnda node_A tab_b tab_a d0b d0 vdd TG2
+XXx2 gnda node_B vref_bottom tab_c d0b d0 vdd TG2
+XXx3 gnda v_out node_B node_A d1b d1 vdd TG2
+.ends
+
+.end
