@@ -1,0 +1,107 @@
+*=========================================================
+* 3-bit DAC Testbench - for direct xschem-netlisted 3bitdac.sch
+* (subckt wrapper commented out since netlisted standalone -
+*  R1-R4, x1, x2, Xx3 lines are live at top level, so sources
+*  attach directly to the real node names: VREF1, gnda, vdd,
+*  d0, d0b, d1, d1b, d2, d2b, v_out)
+*=========================================================
+.lib "/home/harshini/OpenLane/pdks/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.tech/combined/sky130.lib.spice" tt
+
+* Adjust this path to wherever xschem wrote the netlist for
+* 3bitdac.sch (check with: find ~/DAC_Project -iname "3bitdac.spice")
+.include "simulation/3bitdac.spice"
+
+****************************************************
+* Power / Reference
+****************************************************
+VVREF  VREF1  0    DC 1.8
+VDD    vdd    0    DC 1.8
+VGND   gnda   0    DC 0
+
+****************************************************
+* Digital Code Sweep: d2 d1 d0 = 000 .. 111
+* Each code held for 100ns, 800ns total.
+* All bit transitions aligned to the same 100ns boundaries
+* (100ps edge window) so no intermediate codes appear.
+****************************************************
+
+Vd0  d0  0 PWL(
++ 0n 0
++ 99n 0
++ 100n 1.8
++ 199n 1.8
++ 200n 0
++ 299n 0
++ 300n 1.8
++ 399n 1.8
++ 400n 0
++ 499n 0
++ 500n 1.8
++ 599n 1.8
++ 600n 0
++ 699n 0
++ 700n 1.8
++ 800n 1.8 )
+
+Vd0b d0b 0 PWL(
++ 0n 1.8
++ 99n 1.8
++ 100n 0
++ 199n 0
++ 200n 1.8
++ 299n 1.8
++ 300n 0
++ 399n 0
++ 400n 1.8
++ 499n 1.8
++ 500n 0
++ 599n 0
++ 600n 1.8
++ 699n 1.8
++ 700n 0
++ 800n 0 )
+
+Vd1  d1  0 PWL(
++ 0n 0
++ 199n 0
++ 200n 1.8
++ 399n 1.8
++ 400n 0
++ 599n 0
++ 600n 1.8
++ 800n 1.8 )
+
+Vd1b d1b 0 PWL(
++ 0n 1.8
++ 199n 1.8
++ 200n 0
++ 399n 0
++ 400n 1.8
++ 599n 1.8
++ 600n 0
++ 800n 0 )
+
+Vd2  d2  0 PWL(
++ 0n 0
++ 399n 0
++ 400n 1.8
++ 800n 1.8 )
+
+Vd2b d2b 0 PWL(
++ 0n 1.8
++ 399n 1.8
++ 400n 0
++ 800n 0 )
+
+****************************************************
+* Simulation
+****************************************************
+.tran 100p 800n
+
+.control
+run
+wrdata 3bitdac_output.txt v(v_out) v(d0) v(d1) v(d2) v(mid_node)
+plot v(d2) v(d1) v(d0) v(v_out)
+.endc
+.end
+

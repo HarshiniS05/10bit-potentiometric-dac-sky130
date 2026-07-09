@@ -1,0 +1,24 @@
+* 3bitdac - reuses two verified 2bitdac_v2 blocks + 1 combining TG2
+*
+* Architecture:
+*   Upper 2bitdac_v2: VREF1 (1.8V) -> mid_node   (top half, 4 taps)
+*   Lower 2bitdac_v2: mid_node     -> gnda (0V)  (bottom half, 4 taps)
+*   Combining TG2: selects upper_out / lower_out using d2/d2b
+*
+* mid_node is expected to settle at VREF1/2 = 0.9V automatically, since
+* both half-ladders are identical 4x500 ohm dividers in series -> 8 equal
+* 500 ohm segments overall, no boundary resistor adjustment needed.
+
+.subckt 3bitdac VREF1 gnda d0 d0b d1 d1b vdd d2 d2b v_out
+
+* Upper half: spans VREF1 down to mid_node
+X1 VREF1    mid_node gnda d0 d0b vdd d1 d1b upper_out 2bitdac_v2
+
+* Lower half: spans mid_node down to true gnda
+X2 mid_node gnda     gnda d0 d0b vdd d1 d1b lower_out 2bitdac_v2
+
+* Combining stage: d2=1 selects upper_out (top half, higher voltages)
+*                  d2=0 selects lower_out (bottom half, lower voltages)
+X3 gnda v_out lower_out upper_out d2b d2 vdd TG2
+
+.ends

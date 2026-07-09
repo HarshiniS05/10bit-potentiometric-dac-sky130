@@ -1,0 +1,70 @@
+*=========================================================
+* 5-bit DAC Testbench - for direct xschem-netlisted 5bitdac.sch
+* (subckt wrapper commented out since netlisted standalone -
+*  x1, x2, Xx3 lines are live at top level, so sources
+*  attach directly to the real node names: vref_top, gnda, vdd,
+*  d0..d4, d0b..d4b, v_out)
+*
+* NOTE: fix the Xx3 pin order in 5bitdac.sch before running -
+*  it currently reads "d4 d4b" where it should read "d4b d4"
+*  (dinb, din slot order), or the MSB will select the wrong
+*  half and the staircase will fold instead of rising.
+*=========================================================
+.lib "/home/harshini/OpenLane/pdks/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.tech/combined/sky130.lib.spice" tt
+
+* Adjust this path to wherever xschem wrote the netlist for
+* 5bitdac.sch (check with: find ~/DAC_Project -iname "5bitdac.spice")
+.include "simulation/5bitdac.spice"
+
+****************************************************
+* Power / Reference
+****************************************************
+VVREF  vref_top  0    DC 1.8
+VDD    vdd  0    DC 1.8
+VGND   gnda 0    DC 0
+
+****************************************************
+* Digital Code Sweep: d4 d3 d2 d1 d0 = 00000 .. 11111
+* Each code held for 100ns, 3200ns total (32 codes).
+* All bit transitions aligned to 100ns boundaries
+* (100ps edge window) so no intermediate codes appear.
+*
+* Complements (d0b..d4b) generated with behavioral B-sources
+* instead of separate PWL/PULSE sources - this guarantees a
+* perfect logical inverse with zero dead-time overlap, so
+* there's no chance of the mux float-glitch seen earlier
+* in the 3-bit debug (both switch pairs briefly off).
+****************************************************
+
+* d0 (LSB) - toggles every 100ns
+Vd0  d0  0 PULSE(0 1.8 100n 100p 100p 100n 200n)
+Bd0b d0b 0 V = 1.8 - V(d0)
+
+* d1 - toggles every 200ns
+Vd1  d1  0 PULSE(0 1.8 200n 100p 100p 200n 400n)
+Bd1b d1b 0 V = 1.8 - V(d1)
+
+* d2 - toggles every 400ns
+Vd2  d2  0 PULSE(0 1.8 400n 100p 100p 400n 800n)
+Bd2b d2b 0 V = 1.8 - V(d2)
+
+* d3 - toggles every 800ns
+Vd3  d3  0 PULSE(0 1.8 800n 100p 100p 800n 1600n)
+Bd3b d3b 0 V = 1.8 - V(d3)
+
+* d4 (MSB) - single transition at 1600ns, splits the run in half
+Vd4  d4  0 PULSE(0 1.8 1600n 100p 100p 1600n 3200n)
+Bd4b d4b 0 V = 1.8 - V(d4)
+
+****************************************************
+* Simulation
+****************************************************
+.tran 100p 3200n
+
+.control
+run
+wrdata 5bitdac_output.txt v(v_out) v(d0) v(d1) v(d2) v(d3) v(d4) v(mid_node) v(vref_top)
+plot v(d4) v(d3) v(d2) v(d1) v(d0) v(v_out)
+.endc
+
+.end

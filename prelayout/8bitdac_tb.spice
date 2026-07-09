@@ -1,0 +1,93 @@
+*=========================================================
+* 8-bit DAC Testbench - for direct xschem-netlisted 8bitdac.sch
+* (subckt wrapper commented out since netlisted standalone -
+*  x1, x2, Xx3 lines are live at top level, so sources
+*  attach directly to the real node names: vref_top, gnda, vdd,
+*  d0..d7, d0b..d7b, v_out)
+*
+* Netlist audit: all pin orders verified consistent across
+* 8bitdac -> 7bitdac_v2 -> 6bitdac_v2 -> 5bitdac_v2 ->
+* 4bitdac_v2 -> 3bitdac_v2 -> 2bitdac_v2, and every TG2 mux
+* dinb/din alignment checked - no swap bug found.
+*
+* MEMORY NOTE: at 8 levels of recursion this hierarchy has
+* dozens of internal 2bitdac_v2/TG2 copies. The 7-bit run
+* came within ~100MB of ngspice's data cap while saving every
+* internal node. This testbench uses .save to store only the
+* signals actually needed for verification, which cuts the
+* saved data volume by roughly two orders of magnitude.
+*=========================================================
+.lib "/home/harshini/OpenLane/pdks/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.tech/combined/sky130.lib.spice" tt
+
+* Adjust this path to wherever xschem wrote the netlist for
+* 8bitdac.sch (check with: find ~/DAC_Project -iname "8bitdac.spice")
+.include "simulation/8bitdac.spice"
+
+****************************************************
+* Power / Reference
+****************************************************
+VVREF  vref_top  0    DC 1.8
+VDD    vdd  0    DC 1.8
+VGND   gnda 0    DC 0
+
+****************************************************
+* Digital Code Sweep: d7 d6 d5 d4 d3 d2 d1 d0 = 00000000 .. 11111111
+* Each code held for 100ns, 25600ns total (256 codes).
+* All bit transitions aligned to 100ns boundaries
+* (100ps edge window) so no intermediate codes appear.
+*
+* Complements (d0b..d7b) generated with behavioral B-sources
+* for a perfect logical inverse with zero dead-time overlap.
+****************************************************
+
+* d0 (LSB) - toggles every 100ns
+Vd0  d0  0 PULSE(0 1.8 100n 100p 100p 100n 200n)
+Bd0b d0b 0 V = 1.8 - V(d0)
+
+* d1 - toggles every 200ns
+Vd1  d1  0 PULSE(0 1.8 200n 100p 100p 200n 400n)
+Bd1b d1b 0 V = 1.8 - V(d1)
+
+* d2 - toggles every 400ns
+Vd2  d2  0 PULSE(0 1.8 400n 100p 100p 400n 800n)
+Bd2b d2b 0 V = 1.8 - V(d2)
+
+* d3 - toggles every 800ns
+Vd3  d3  0 PULSE(0 1.8 800n 100p 100p 800n 1600n)
+Bd3b d3b 0 V = 1.8 - V(d3)
+
+* d4 - toggles every 1600ns
+Vd4  d4  0 PULSE(0 1.8 1600n 100p 100p 1600n 3200n)
+Bd4b d4b 0 V = 1.8 - V(d4)
+
+* d5 - toggles every 3200ns
+Vd5  d5  0 PULSE(0 1.8 3200n 100p 100p 3200n 6400n)
+Bd5b d5b 0 V = 1.8 - V(d5)
+
+* d6 - toggles every 6400ns
+Vd6  d6  0 PULSE(0 1.8 6400n 100p 100p 6400n 12800n)
+Bd6b d6b 0 V = 1.8 - V(d6)
+
+* d7 (MSB) - single transition at 12800ns, splits the run in half
+Vd7  d7  0 PULSE(0 1.8 12800n 100p 100p 12800n 25600n)
+Bd7b d7b 0 V = 1.8 - V(d7)
+
+****************************************************
+* Simulation
+* .save restricts stored data to just the signals needed -
+* without this, ngspice archives every internal ladder node
+* (tab_a/b/c, node_a/b, mid_node) at every recursion level for
+* every timestep, which is what pushed the 7-bit run close to
+* the memory limit.
+****************************************************
+.save v(v_out) v(d0) v(d1) v(d2) v(d3) v(d4) v(d5) v(d6) v(d7) v(mid_node) v(vref_top)
+.tran 100p 25600n
+
+.control
+run
+wrdata 8bitdac_output.txt v(v_out) v(d0) v(d1) v(d2) v(d3) v(d4) v(d5) v(d6) v(d7) v(mid_node) v(vref_top)
+plot v(d7) v(d6) v(d5) v(d4) v(d3) v(d2) v(d1) v(d0) v(v_out)
+.endc
+
+.end
+

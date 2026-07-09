@@ -1,0 +1,179 @@
+*=========================================================
+* 4-bit DAC Testbench - for direct xschem-netlisted 4bitdac.sch
+* (subckt wrapper commented out since netlisted standalone -
+*  x1, x2, Xx3 lines are live at top level, so sources
+*  attach directly to the real node names: VREF1, gnda, vdd,
+*  d0, d0b, d1, d1b, d2, d2b, d3, d3b, v_out)
+*=========================================================
+.lib "/home/harshini/OpenLane/pdks/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.tech/combined/sky130.lib.spice" tt
+
+* Adjust this path to wherever xschem wrote the netlist for
+* 4bitdac.sch (check with: find ~/DAC_Project -iname "4bitdac.spice")
+.include "simulation/4bitdac.spice"
+
+****************************************************
+* Power / Reference
+****************************************************
+VVREF  VREF1  0    DC 1.8
+VDD    vdd    0    DC 1.8
+VGND   gnda   0    DC 0
+
+****************************************************
+* Digital Code Sweep: d3 d2 d1 d0 = 0000 .. 1111
+* Each code held for 100ns, 1600ns total.
+* All bit transitions aligned to 100ns boundaries
+* (100ps edge window) so no intermediate codes appear.
+****************************************************
+
+* d0 toggles every 100ns (LSB)
+Vd0  d0  0 PWL(
++ 0n 0
++ 99n 0
++ 100n 1.8
++ 199n 1.8
++ 200n 0
++ 299n 0
++ 300n 1.8
++ 399n 1.8
++ 400n 0
++ 499n 0
++ 500n 1.8
++ 599n 1.8
++ 600n 0
++ 699n 0
++ 700n 1.8
++ 799n 1.8
++ 800n 0
++ 899n 0
++ 900n 1.8
++ 999n 1.8
++ 1000n 0
++ 1099n 0
++ 1100n 1.8
++ 1199n 1.8
++ 1200n 0
++ 1299n 0
++ 1300n 1.8
++ 1399n 1.8
++ 1400n 0
++ 1499n 0
++ 1500n 1.8
++ 1600n 1.8 )
+
+Vd0b d0b 0 PWL(
++ 0n 1.8
++ 99n 1.8
++ 100n 0
++ 199n 0
++ 200n 1.8
++ 299n 1.8
++ 300n 0
++ 399n 0
++ 400n 1.8
++ 499n 1.8
++ 500n 0
++ 599n 0
++ 600n 1.8
++ 699n 1.8
++ 700n 0
++ 799n 0
++ 800n 1.8
++ 899n 1.8
++ 900n 0
++ 999n 0
++ 1000n 1.8
++ 1099n 1.8
++ 1100n 0
++ 1199n 0
++ 1200n 1.8
++ 1299n 1.8
++ 1300n 0
++ 1399n 0
++ 1400n 1.8
++ 1499n 1.8
++ 1500n 0
++ 1600n 0 )
+
+* d1 toggles every 200ns
+Vd1  d1  0 PWL(
++ 0n 0
++ 199n 0
++ 200n 1.8
++ 399n 1.8
++ 400n 0
++ 599n 0
++ 600n 1.8
++ 799n 1.8
++ 800n 0
++ 999n 0
++ 1000n 1.8
++ 1199n 1.8
++ 1200n 0
++ 1399n 0
++ 1400n 1.8
++ 1600n 1.8 )
+
+Vd1b d1b 0 PWL(
++ 0n 1.8
++ 199n 1.8
++ 200n 0
++ 399n 0
++ 400n 1.8
++ 599n 1.8
++ 600n 0
++ 799n 0
++ 800n 1.8
++ 999n 1.8
++ 1000n 0
++ 1199n 0
++ 1200n 1.8
++ 1399n 1.8
++ 1400n 0
++ 1600n 0 )
+
+* d2 toggles every 400ns
+Vd2  d2  0 PWL(
++ 0n 0
++ 399n 0
++ 400n 1.8
++ 799n 1.8
++ 800n 0
++ 1199n 0
++ 1200n 1.8
++ 1600n 1.8 )
+
+Vd2b d2b 0 PWL(
++ 0n 1.8
++ 399n 1.8
++ 400n 0
++ 799n 0
++ 800n 1.8
++ 1199n 1.8
++ 1200n 0
++ 1600n 0 )
+
+* d3 toggles every 800ns (MSB)
+Vd3  d3  0 PWL(
++ 0n 0
++ 799n 0
++ 800n 1.8
++ 1600n 1.8 )
+
+Vd3b d3b 0 PWL(
++ 0n 1.8
++ 799n 1.8
++ 800n 0
++ 1600n 0 )
+
+****************************************************
+* Simulation
+****************************************************
+.tran 100p 1600n
+
+.control
+run
+wrdata 4bitdac_output.txt v(v_out) v(d0) v(d1) v(d2) v(d3) v(mid_node) v(VREF1)
+plot v(d3) v(d2) v(d1) v(d0) v(v_out)
+.endc
+
+.end

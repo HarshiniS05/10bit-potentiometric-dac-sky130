@@ -1,0 +1,72 @@
+*=========================================================
+* 7-bit DAC Testbench - Hierarchical Xschem Netlist
+*=========================================================
+
+.lib "/home/harshini/OpenLane/pdks/volare/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.tech/combined/sky130.lib.spice" tt
+
+.include "simulation/7bitdac.spice"
+
+****************************************************
+* Power Supplies
+****************************************************
+VVREF  vref_top  0  DC 1.8
+VDD    vdd       0  DC 1.8
+VGND   gnda      0  DC 0
+
+****************************************************
+* Digital Inputs
+****************************************************
+
+* d0 (LSB)
+Vd0  d0  0  PULSE(0 1.8 100n 100p 100p 100n 200n)
+Bd0b d0b 0  V = 1.8 - V(d0)
+
+* d1
+Vd1  d1  0  PULSE(0 1.8 200n 100p 100p 200n 400n)
+Bd1b d1b 0  V = 1.8 - V(d1)
+
+* d2
+Vd2  d2  0  PULSE(0 1.8 400n 100p 100p 400n 800n)
+Bd2b d2b 0  V = 1.8 - V(d2)
+
+* d3
+Vd3  d3  0  PULSE(0 1.8 800n 100p 100p 800n 1600n)
+Bd3b d3b 0  V = 1.8 - V(d3)
+
+* d4
+Vd4  d4  0  PULSE(0 1.8 1600n 100p 100p 1600n 3200n)
+Bd4b d4b 0  V = 1.8 - V(d4)
+
+* d5
+Vd5  d5  0  PULSE(0 1.8 3200n 100p 100p 3200n 6400n)
+Bd5b d5b 0  V = 1.8 - V(d5)
+
+* d6 (MSB)
+Vd6  d6  0  PULSE(0 1.8 6400n 100p 100p 6400n 12800n)
+Bd6b d6b 0  V = 1.8 - V(d6)
+
+****************************************************
+* Save only required signals (reduces memory usage)
+****************************************************
+.save v(v_out)
++ v(d0) v(d1) v(d2) v(d3) v(d4) v(d5) v(d6)
++ v(d0b) v(d1b) v(d2b) v(d3b) v(d4b) v(d5b) v(d6b)
++ v(mid_node)
+
+****************************************************
+* Simulation
+****************************************************
+.tran 200p 12800n
+
+.control
+run
+
+plot v(d6) v(d5) v(d4) v(d3) v(d2) v(d1) v(d0) v(v_out)
+
+wrdata 7bitdac_output.txt \
+v(v_out) \
+v(d0) v(d1) v(d2) v(d3) v(d4) v(d5) v(d6)
+
+.endc
+
+.end
